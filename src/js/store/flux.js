@@ -5,28 +5,33 @@ const StoreContext = createContext(null);
 const getState = ({ setStore }) => {
   return {
     store: {
-      character: null,
+      characters: [],
     },
-    actions: {
+	  actions: {
+		//Fetch para los detalles de los personajes
       fetchCharacter: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/people/1");
           const data = await response.json();
 
-          console.log("Data from API:", data);
+          console.log("API Fetch:", data);
 
-          if (data && data.result && data.result.properties) {
-            setStore((prevState) => ({
-              ...prevState,
-              character: {
-                name: data.result.properties.name,
-                height: data.result.properties.height,
-                mass: data.result.properties.mass,
-              },
-            }));
-          }
+          setStore({ character: data.properties || {} });
         } catch (error) {
           console.error("Error fetching character:", error);
+        }
+		  },
+		  //Fetch para nombres de los personajes y sus id
+      fetchCharacters: async () => {
+        try {
+          const response = await fetch("https://www.swapi.tech/api/people/");
+          const data = await response.json();
+
+          console.log("API Fetch for characters:", data);
+
+          setStore({ characters: data.results || [] });
+        } catch (error) {
+          console.error("Error fetching characters:", error);
         }
       },
     },
