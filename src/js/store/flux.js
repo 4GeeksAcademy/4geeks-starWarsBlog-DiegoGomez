@@ -1,45 +1,36 @@
-const getState = ({ getStore, getActions, setStore }) => {
-	return {
-		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
-		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
+import { createContext } from "react";
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+const StoreContext = createContext(null);
 
-				//reset the global store
-				setStore({ demo: demo });
-			}
-		}
-	};
+const getState = ({ setStore }) => {
+  return {
+    store: {
+      character: null,
+    },
+    actions: {
+      fetchCharacter: async () => {
+        try {
+          const response = await fetch("https://www.swapi.tech/api/people/1");
+          const data = await response.json();
+
+          console.log("Data from API:", data);
+
+          if (data && data.result && data.result.properties) {
+            setStore((prevState) => ({
+              ...prevState,
+              character: {
+                name: data.result.properties.name,
+                height: data.result.properties.height,
+                mass: data.result.properties.mass,
+              },
+            }));
+          }
+        } catch (error) {
+          console.error("Error fetching character:", error);
+        }
+      },
+    },
+  };
 };
 
-export default getState;
+export { StoreContext, getState as default };
