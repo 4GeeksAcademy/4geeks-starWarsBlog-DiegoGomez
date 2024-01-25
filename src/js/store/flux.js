@@ -6,52 +6,71 @@ const StoreContext = createContext(null);
 const getState = ({ setStore }) => {
   return {
     store: {
-      // Nombres
       characters: [],
       vehicles: [],
       planets: [],
-      // Detalles
-      characterDetails: {} // Store character details for each character separately
+      characterDetails: {}, // Store character details for each character separately
     },
     actions: {
-      // Fetch para nombres de los personajes y sus id
-      fetchCharacters: async () => {
+      fetchCharacters: async (retryCount = 0) => {
         try {
           const response = await fetch("https://www.swapi.tech/api/people/");
+          if (!response.ok) {
+            if (response.status === 429) {
+              // Retry after a delay
+              const delay = 5000; // 5 seconds delay (you can adjust as needed)
+              await new Promise((resolve) => setTimeout(resolve, delay));
+              if (retryCount < 3) {
+                // Retry up to 3 times
+                return actions.fetchCharacters(retryCount + 1);
+              } else {
+                throw new Error("Maximum retry limit reached");
+              }
+            } else {
+              throw new Error("Failed to fetch characters");
+            }
+          }
           const data = await response.json();
-
           setStore({ characters: data.results || [] });
         } catch (error) {
           console.error("Error fetching characters:", error);
+          // Retry or handle the error as needed
         }
       },
-      // Fetch para los detalles de un personaje específico
+
       fetchCharacter: async (characterId) => {
         try {
-          const response = await fetch(`https://www.swapi.tech/api/people/${characterId}/`);
+          const response = await fetch(
+            `https://www.swapi.tech/api/people/${characterId}/`
+          );
           if (!response.ok) {
             throw new Error("Failed to fetch character details");
           }
           const data = await response.json();
-
           console.log("API Fetch for character:", data);
-
-          // Set character details for the specific character ID
-          setStore(prevState => ({
+          // Access the store via setStore
+          const { store } = getState({ setStore });
+          setStore({
             characterDetails: {
-              ...prevState.characterDetails,
-              [characterId]: data.result.properties || {}
-            }
-          }));
+              ...store.characterDetails,
+              [characterId]: data.result.properties,
+            },
+          });
         } catch (error) {
-          console.error(`Error fetching character with ID ${characterId}:`, error);
+          console.error(
+            `Error fetching character with ID ${characterId}:`,
+            error
+          );
         }
       },
+
       fetchVehicles: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/vehicles/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch vehicles");
+          }
           const data = await response.json();
-
           setStore({ vehicles: data.results || [] });
         } catch (error) {
           console.error("Error fetching vehicles:", error);
@@ -60,16 +79,17 @@ const getState = ({ setStore }) => {
       fetchPlanets: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/planets/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch planets");
+          }
           const data = await response.json();
-
-
           setStore({ planets: data.results || [] });
         } catch (error) {
           console.error("Error fetching planets:", error);
         }
       },
     },
-    }
   };
+};
 
 export { StoreContext, getState as default };
