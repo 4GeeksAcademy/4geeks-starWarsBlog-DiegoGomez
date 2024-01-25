@@ -5,46 +5,46 @@ const Characters = () => {
   const { store, actions } = useContext(Context);
 
   useEffect(() => {
-    // Fetch characters only if the store is empty
+    // Obtener los personajes si el length de la lista de personajes es 0
     if (store.characters.length === 0) {
       actions.fetchCharacters();
     }
   }, [actions, store.characters]);
 
   useEffect(() => {
-    // Fetch character details for each character
-    store.characters.forEach(character => {
-      // Check if character details exist in store before fetching
-      if (!store.characterDetails[character.uid]) {
-        actions.fetchCharacter(character.uid);
-      }
-    });
-  }, [actions, store.characters, store.characterDetails]);
+    // Obtener los detalles de todos los personajes si el length de la lista de personajes es mayor que 0
+    if (store.characters.length > 0) {
+      // Obtener los IDs de todos los personajes
+      const characterIds = store.characters.map(character => character.uid);
+      // Llamar a la función para obtener los detalles de los personajes usando sus IDs
+      actions.fetchCharactersDetails(characterIds);
+    }
+  }, [actions, store.characters]);
 
   return (
     <div className="p-5 mt-5">
-      <h1 className="text-center mb-4 text-white">Star Wars Characters</h1>
+      <h1 className="text-center mb-4 text-white">Personajes de Star Wars</h1>
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {store.characters.map((character) => (
           <div key={character.uid} className="col">
             <div className="card">
               <div className="card-body">
                 <h5 className="card-title">{character.name}</h5>
-                {/* Check if character details exist before displaying them */}
+                {/* Comprobar si existen los detalles del personaje antes de mostrarlos */}
                 {store.characterDetails[character.uid] && (
                   <>
-                    <p className="card-text">Gender: {store.characterDetails[character.uid]?.gender}</p>
-                    <p className="card-text">Hair Color: {store.characterDetails[character.uid]?.hair_color}</p>
-                    <p className="card-text">Eye Color: {store.characterDetails[character.uid]?.eye_color}</p>
+                    <p className="card-text">Género: {store.characterDetails[character.uid].gender}</p>
+                    <p className="card-text">Color de pelo: {store.characterDetails[character.uid].hair_color}</p>
+                    <p className="card-text">Color de ojos: {store.characterDetails[character.uid].eye_color}</p>
                   </>
                 )}
-                {/* Display loading message if character details are being fetched */}
+                {/* Mostrar mensaje de carga si se están recuperando los detalles del personaje */}
                 {!store.characterDetails[character.uid] && (
-                  <p className="text-muted">Fetching character details...</p>
+                  <p className="text-muted">Loading...</p>
                 )}
-                {/* Display error message if fetching character details failed */}
+                {/* Mostrar mensaje de error si falla la recuperación de los detalles del personaje */}
                 {store.characterDetails[character.uid] === false && (
-                  <p className="text-danger">Failed to fetch character details.</p>
+                  <p className="text-danger">Loading.</p>
                 )}
               </div>
             </div>
