@@ -1,3 +1,4 @@
+// Flux.js
 import { createContext } from "react";
 
 const StoreContext = createContext(null);
@@ -5,25 +6,15 @@ const StoreContext = createContext(null);
 const getState = ({ setStore }) => {
   return {
     store: {
+      // Nombres
       characters: [],
       vehicles: [],
       planets: [],
+      // Detalles
+      characterDetails: {} // Store character details for each character separately
     },
-	  actions: {
-		//Fetch para los detalles de los personajes
-      fetchCharacter: async () => {
-        try {
-          const response = await fetch("https://www.swapi.tech/api/people/1");
-          const data = await response.json();
-
-          console.log("API Fetch:", data);
-
-          setStore({ character: data.properties || {} });
-        } catch (error) {
-          console.error("Error fetching character:", error);
-        }
-		  },
-		  //Fetch para nombres de los personajes y sus id
+    actions: {
+      // Fetch para nombres de los personajes y sus id
       fetchCharacters: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/people/");
@@ -32,6 +23,28 @@ const getState = ({ setStore }) => {
           setStore({ characters: data.results || [] });
         } catch (error) {
           console.error("Error fetching characters:", error);
+        }
+      },
+      // Fetch para los detalles de un personaje específico
+      fetchCharacter: async (characterId) => {
+        try {
+          const response = await fetch(`https://www.swapi.tech/api/people/${characterId}/`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch character details");
+          }
+          const data = await response.json();
+
+          console.log("API Fetch for character:", data);
+
+          // Set character details for the specific character ID
+          setStore(prevState => ({
+            characterDetails: {
+              ...prevState.characterDetails,
+              [characterId]: data.result.properties || {}
+            }
+          }));
+        } catch (error) {
+          console.error(`Error fetching character with ID ${characterId}:`, error);
         }
       },
       fetchVehicles: async () => {
@@ -56,7 +69,7 @@ const getState = ({ setStore }) => {
         }
       },
     },
+    }
   };
-};
 
 export { StoreContext, getState as default };
