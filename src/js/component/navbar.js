@@ -7,7 +7,7 @@ export const Navbar = () => {
       <div className="d-flex flex-column align-items-center">
         <div className="d-flex align-items-center">
           <img src={img} className="w-25" alt="Star Wars Logo" />
-          <h1 className="display-2 mt-5">Star Wars</h1>
+          <h1 className="display-2 mt-5">Star Wars API</h1>
         </div>
         <p>
           Made by{" "}

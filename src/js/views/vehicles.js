@@ -4,39 +4,58 @@ import { Context } from "../store/appContext";
 const Vehicles = () => {
   const { store, actions } = useContext(Context);
 
+  // Efecto para cargar la lista de vehículos si está vacía
   useEffect(() => {
-    actions.fetchVehicles();
-  }, [actions]);
+    if (store.vehicles.length === 0) {
+      actions.fetchVehicles();
+    }
+  }, [actions, store.vehicles]);
 
-  console.log("Value of vehicles:", store.vehicles);
+  // Efecto para cargar los detalles de los vehículos una vez que se ha cargado la lista de vehículos
+  useEffect(() => {
+    if (store.vehicles.length > 0) {
+      const vehicleIds = store.vehicles.map((vehicle) => vehicle.uid);
+      actions.fetchVehicleDetails(vehicleIds);
+    }
+  }, [actions, store.vehicles]);
 
   return (
-    <div className=" p-5 mt-5">
-      <h1 className="text-center mb-4 text-white">Star Wars Vehicles</h1>
-      <div className="d-flex w-100">
-        {store.vehicles &&
-          store.vehicles.map((vehicle) => (
-            <div key={vehicle.uid} className="card mx-1">
-              <div>
-                <img
-                  src={`https://via.placeholder.com/300x400`} // Adjust the size as needed
-                  className="card-img-top"
-                  alt={vehicle.name}
-                />
-                <div className="card-body">
-                  <p className="card-title fw-bold">{vehicle.name}</p>
-                  <p className="card-text text-black">
-                    Length: {vehicle.length}<br />
-                    Model: {vehicle.model}<br />
-                    Passengers: {vehicle.passengers}
-                  </p>
-                  <a href="#" className="btn btn-primary">
-                    Go somewhere
-                  </a>
-                </div>
+    <div className="p-5 mt-5">
+      <h1 className="text-center mb-4 text-white">Vehicles</h1>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {store.vehicles.map((vehicle) => (
+          <div key={vehicle.uid} className="col">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title text-success display-6 fw-bold">
+                  {vehicle.name}
+                </h5>
+                {/* Mostrar los detalles del vehículo si están disponibles */}
+                {store.vehicleDetails[vehicle.uid] && (
+                  <div>
+                    <p className="card-text fw-bold">
+                      Length: {store.vehicleDetails[vehicle.uid].length}
+                    </p>
+                    <p className="card-text fw-bold">
+                      Model: {store.vehicleDetails[vehicle.uid].model}
+                    </p>
+                    <p className="card-text fw-bold">
+                      Passengers: {store.vehicleDetails[vehicle.uid].passengers}
+                    </p>
+                  </div>
+                )}
+                {/* Mostrar mensaje de carga si los detalles del vehículo están siendo cargados */}
+                {!store.vehicleDetails[vehicle.uid] && (
+                  <p className="text-muted">Loading...</p>
+                )}
+                {/* Mostrar mensaje de error si falla la carga de los detalles del vehículo */}
+                {store.vehicleDetails[vehicle.uid] === false && (
+                  <p className="text-danger">Error fetching.</p>
+                )}
               </div>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   );

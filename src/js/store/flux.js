@@ -10,6 +10,8 @@ const getState = ({ setStore }) => {
       vehicles: [], // Almacena la lista de vehículos
       planets: [], // Almacena la lista de planetas
       characterDetails: {}, // Almacena los detalles de cada personaje por su ID
+      planetDetails: {}, // Almacena los detalles de cada planeta por su ID
+      vehicleDetails: {}, // Almacena los detalles de cada vehículo por su ID
     },
     actions: {
       // Función para recuperar la lista de personajes
@@ -45,25 +47,34 @@ const getState = ({ setStore }) => {
         try {
           const characterDetails = {};
           // Iterar sobre todos los IDs de personajes para obtener los detalles de cada uno
-          await Promise.all(characterIds.map(async (characterId) => {
-            //Este endpoint recibe el ID del personaje como parámetro
-            const response = await fetch(`https://www.swapi.tech/api/people/${characterId}/`);
-            // Si la respuesta no es correcta, lanzar un error para que se pueda capturar en el bloque catch de la función
-            if (!response.ok) {
-              throw new Error(`Error al recuperar los detalles del personaje con ID ${characterId}`);
-            }
-            const data = await response.json();
-            // Almacenar los detalles del personaje en el objeto characterDetails usando su ID como clave
-            characterDetails[characterId] = data.result.properties;
-          }));
+          await Promise.all(
+            characterIds.map(async (characterId) => {
+              //Este endpoint recibe el ID del personaje como parámetro
+              const response = await fetch(
+                `https://www.swapi.tech/api/people/${characterId}/`
+              );
+              // Si la respuesta no es correcta, lanzar un error para que se pueda capturar en el bloque catch de la función
+              if (!response.ok) {
+                throw new Error(
+                  `Error al recuperar los detalles del personaje con ID ${characterId}`
+                );
+              }
+              const data = await response.json();
+              // Almacenar los detalles del personaje en el objeto characterDetails usando su ID como clave
+              characterDetails[characterId] = data.result.properties;
+            })
+          );
           // Actualizar el estado con los detalles de los personajes
           setStore({ characterDetails });
         } catch (error) {
-          console.error("Error al recuperar los detalles de los personajes:", error);
+          console.error(
+            "Error al recuperar los detalles de los personajes:",
+            error
+          );
         }
       },
 
-      // Función para recuperar la lista de vehículos
+      // Función para obtener la lista de vehículos
       fetchVehicles: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/vehicles/");
@@ -77,8 +88,37 @@ const getState = ({ setStore }) => {
           console.error("Error al recuperar los vehículos:", error);
         }
       },
-      
-      // Función para recuperar la lista de planetas
+
+      // Función para obtener los detalles de todos los vehículos
+      fetchVehicleDetails: async (vehicleIds) => {
+        try {
+          const vehicleDetails = {};
+          await Promise.all(
+            vehicleIds.map(async (vehicleId) => {
+              const response = await fetch(
+                `https://www.swapi.tech/api/vehicles/${vehicleId}/`
+              );
+              if (!response.ok) {
+                throw new Error(
+                  `Error al recuperar los detalles del vehículo con ID ${vehicleId}`
+                );
+              }
+              const data = await response.json();
+              // Almacenar los detalles del vehículo en el objeto vehicleDetails usando su ID como clave
+              vehicleDetails[vehicleId] = data.result.properties;
+            })
+          );
+          // Actualizar el estado con los detalles de los vehículos
+          setStore({ vehicleDetails });
+        } catch (error) {
+          console.error(
+            "Error al recuperar los detalles de los vehículos:",
+            error
+          );
+        }
+      },
+
+      // Función para obtener la lista de planetas
       fetchPlanets: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/planets/");
@@ -90,6 +130,38 @@ const getState = ({ setStore }) => {
           setStore({ planets: data.results || [] });
         } catch (error) {
           console.error("Error al recuperar los planetas:", error);
+        }
+      },
+
+      // Función para obtener los detalles de un planeta específico
+      fetchPlanetDetails: async (planetIds) => {
+        try {
+          const planetDetails = {};
+          // Iterar sobre todos los IDs de planetas para obtener los detalles de cada uno
+          await Promise.all(
+            planetIds.map(async (planetId) => {
+              //Este endpoint recibe el ID del planeta como parámetro
+              const response = await fetch(
+                `https://www.swapi.tech/api/planets/${planetId}/`
+              );
+              // Si la respuesta no es correcta, lanzar un error para que se pueda capturar en el bloque catch de la función
+              if (!response.ok) {
+                throw new Error(
+                  `Error al recuperar los detalles del planeta con ID ${planetId}`
+                );
+              }
+              const data = await response.json();
+              // Almacenar los detalles del planeta en el objeto planetDetails usando su ID como clave
+              planetDetails[planetId] = data.result.properties;
+            })
+          );
+          // Actualizar el estado con los detalles de los planetas
+          setStore({ planetDetails });
+        } catch (error) {
+          console.error(
+            "Error al recuperar los detalles de los planetas:",
+            error
+          );
         }
       },
     },
