@@ -66,7 +66,13 @@ const Characters = () => {
                         className="border border-0 bg-transparent"
                         onClick={() => handleToggleFavorite(character.uid)}
                       >
-                        <i className="fa-regular fa-heart fs-1"></i>
+                        <i
+                          className={`fa-regular fs-1 ${
+                            store.favoriteCharacters.includes(character.uid)
+                              ? "fa-solid fa-heart text-danger"
+                              : "fa-heart"
+                          }`}
+                        ></i>
                       </button>
                       <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
                     </div>
