@@ -19,6 +19,11 @@ const Vehicles = () => {
     }
   }, [actions, store.vehicles]);
 
+  // Toggle favorite status for vehicle
+  const handleToggleFavorite = (vehicleId) => {
+    actions.toggleFavoriteVehicle(vehicleId);
+  };
+
   return (
     <div className="p-5 mt-5">
       <h1 className="text-center mb-4 text-white">Vehicles</h1>
@@ -43,8 +48,12 @@ const Vehicles = () => {
                       Passengers: {store.vehicleDetails[vehicle.uid].passengers}
                     </p>
                     <div className="d-flex">
-                      <i className="fa-regular fa-heart fs-1"></i>
-                      <i className="fa-solid fa-heart fs-1 ms-3 text-danger"></i>
+                      <button
+                        className="border border-0 bg-transparent"
+                        onClick={() => handleToggleFavorite(vehicle.uid)}
+                      >
+                        <i className="fa-regular fa-heart fs-1"></i>
+                      </button>
                       <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
                     </div>
                   </div>

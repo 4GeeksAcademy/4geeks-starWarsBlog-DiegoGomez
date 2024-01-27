@@ -13,6 +13,8 @@ const getState = ({ getStore, getActions, setStore }) => {
       planetDetails: {}, // Almacena los detalles de cada planeta por su ID
       vehicleDetails: {}, // Almacena los detalles de cada vehículo por su ID
       favoriteCharacters: [], // Almacena los IDs de los personajes favoritos
+      favoritePlanets: [], // Almacena los IDs de los planetas favoritos
+      favoriteVehicles: [], // Almacena los IDs de los vehículos favoritos
     },
     actions: {
       // Función para recuperar la lista de personajes
@@ -46,8 +48,8 @@ const getState = ({ getStore, getActions, setStore }) => {
       // Función para recuperar los detalles de todos los personajes
       fetchCharactersDetails: async (characterIds) => {
         try {
-          const store = getStore()
-          const charactersDetails = store.characterDetails
+          const store = getStore();
+          const charactersDetails = store.characterDetails;
           // Iterar sobre todos los IDs de personajes para obtener los detalles de cada uno
           await Promise.all(
             characterIds.map(async (characterId) => {
@@ -76,8 +78,8 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-       // Función para recuperar la lista de vehículos
-       fetchVehicles: async (retryCount = 0) => {
+      // Función para recuperar la lista de vehículos
+      fetchVehicles: async (retryCount = 0) => {
         try {
           const response = await fetch("https://www.swapi.tech/api/vehicles/");
           if (!response.ok) {
@@ -107,8 +109,8 @@ const getState = ({ getStore, getActions, setStore }) => {
       // Función para obtener los detalles de todos los vehículos
       fetchVehicleDetails: async (vehicleIds) => {
         try {
-          const store = getStore()
-          const vehiclesDetails = store.vehicleDetails
+          const store = getStore();
+          const vehiclesDetails = store.vehicleDetails;
           await Promise.all(
             vehicleIds.map(async (vehicleId) => {
               const response = await fetch(
@@ -162,12 +164,11 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-
       // Función para obtener los detalles de un planeta específico
       fetchPlanetDetails: async (planetIds) => {
         try {
-          const store = getStore()
-          const planetsDetails = store.planetDetails
+          const store = getStore();
+          const planetsDetails = store.planetDetails;
           // Iterar sobre todos los IDs de planetas para obtener los detalles de cada uno
           await Promise.all(
             planetIds.map(async (planetId) => {
@@ -195,8 +196,9 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-      toggleFavorite: (store, characterId) => {
-        // Toggle de personajes favoritos
+      // Función para alternar el estado de favorito para un personaje
+      toggleFavoriteCharacter: (characterId) => {
+        const store = getStore();
         const favoriteIndex = store.favoriteCharacters.indexOf(characterId);
         if (favoriteIndex === -1) {
           setStore({
@@ -211,7 +213,45 @@ const getState = ({ getStore, getActions, setStore }) => {
             ),
           });
         }
-      }
+      },
+
+      // Función para alternar el estado de favorito para un planeta
+      toggleFavoritePlanet: (planetId) => {
+        const store = getStore();
+        const favoriteIndex = store.favoritePlanets.indexOf(planetId);
+        if (favoriteIndex === -1) {
+          setStore({
+            ...store,
+            favoritePlanets: [...store.favoritePlanets, planetId],
+          });
+        } else {
+          setStore({
+            ...store,
+            favoritePlanets: store.favoritePlanets.filter(
+              (id) => id !== planetId
+            ),
+          });
+        }
+      },
+
+      // Función para alternar el estado de favorito para un vehículo
+      toggleFavoriteVehicle: (vehicleId) => {
+        const store = getStore();
+        const favoriteIndex = store.favoriteVehicles.indexOf(vehicleId);
+        if (favoriteIndex === -1) {
+          setStore({
+            ...store,
+            favoriteVehicles: [...store.favoriteVehicles, vehicleId],
+          });
+        } else {
+          setStore({
+            ...store,
+            favoriteVehicles: store.favoriteVehicles.filter(
+              (id) => id !== vehicleId
+            ),
+          });
+        }
+      },
     },
   };
 };

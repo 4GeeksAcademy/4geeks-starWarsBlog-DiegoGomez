@@ -21,6 +21,10 @@ const Planets = () => {
     }
   }, [actions, store.planets]);
 
+  // Toggle favorite status for vehicle
+  const handleToggleFavorite = (planetId) => {
+    actions.toggleFavoritePlanet(planetId);
+  };
   return (
     <div className="p-5 mt-5">
       <h1 className="text-center mb-4 text-white">Planets</h1>
@@ -45,8 +49,12 @@ const Planets = () => {
                       Gravity: {store.planetDetails[planet.uid].gravity}
                     </p>
                     <div className="d-flex">
-                      <i className="fa-regular fa-heart fs-1"></i>
-                      <i className="fa-solid fa-heart fs-1 ms-3 text-danger"></i>
+                      <button
+                        className="border border-0 bg-transparent"
+                        onClick={() => handleToggleFavorite(planet.uid)}
+                      >
+                        <i className="fa-regular fa-heart fs-1"></i>
+                      </button>
                       <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
                     </div>
                   </div>

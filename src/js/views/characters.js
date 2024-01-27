@@ -21,9 +21,11 @@ const Characters = () => {
     }
   }, [actions, store.characters]);
 
+   // Toggle favorite status for character
   const handleToggleFavorite = (characterId) => {
-    actions.toggleFavorite(store, characterId);
+    actions.toggleFavoriteCharacter(characterId);
   };
+
 
   return (
     <div className="p-5 mt-5">
