@@ -5,14 +5,14 @@ const Characters = () => {
   const { store, actions } = useContext(Context);
 
   useEffect(() => {
-    // Obtener los personajes si el length de la lista de personajes es 0
+    // Obtener los personajes si el tamaño de la lista de personajes es 0
     if (store.characters.length === 0) {
       actions.fetchCharacters();
     }
   }, [actions, store.characters]);
 
   useEffect(() => {
-    // Obtener los detalles de todos los personajes si el length de la lista de personajes es mayor que 0
+    // Obtener los detalles de todos los personajes si el tamaño de la lista de personajes es mayor que 0
     if (store.characters.length > 0) {
       // Obtener los IDs de todos los personajes
       const characterIds = store.characters.map((character) => character.uid);
@@ -21,11 +21,15 @@ const Characters = () => {
     }
   }, [actions, store.characters]);
 
-   // Toggle favorite status for character
+  // Alternar el estado favorito para un personaje
   const handleToggleFavorite = (characterId) => {
     actions.toggleFavoriteCharacter(characterId);
   };
 
+  // Función para obtener la URL de la imagen del personaje
+  const getCharacterImageUrl = (characterId) => {
+    return `https://starwars-visualguide.com/assets/img/characters/${characterId}.jpg`;
+  };
 
   return (
     <div className="p-5 mt-5">
@@ -34,6 +38,11 @@ const Characters = () => {
         {store.characters.map((character) => (
           <div key={character.uid} className="col">
             <div className="card">
+              <img
+                src={getCharacterImageUrl(character.uid)}
+                className="card-img-top w-50 rounded mx-auto d-block"
+                alt={character.name}
+              />
               <div className="card-body">
                 <h5 className="card-title text-primary display-6 fw-bold">
                   {character.name}
@@ -53,7 +62,8 @@ const Characters = () => {
                       {store.characterDetails[character.uid].eye_color}
                     </p>
                     <div className="d-flex">
-                      <button className="border border-0 bg-transparent"
+                      <button
+                        className="border border-0 bg-transparent"
                         onClick={() => handleToggleFavorite(character.uid)}
                       >
                         <i className="fa-regular fa-heart fs-1"></i>
@@ -68,7 +78,7 @@ const Characters = () => {
                 )}
                 {/* Mostrar mensaje de error si falla la recuperación de los detalles del personaje */}
                 {store.characterDetails[character.uid] === false && (
-                  <p className="text-danger">Error fetching.</p>
+                  <p className="text-danger">Error fetching data.</p>
                 )}
               </div>
             </div>

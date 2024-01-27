@@ -1,8 +1,9 @@
-// Flux.js
 import { createContext } from "react";
 
+// Crear el contexto de la tienda
 const StoreContext = createContext(null);
 
+// Función para obtener el estado y las acciones
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -44,7 +45,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error al recuperar los personajes:", error);
         }
       },
-
       // Función para recuperar los detalles de todos los personajes
       fetchCharactersDetails: async (characterIds) => {
         try {
@@ -53,7 +53,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           // Iterar sobre todos los IDs de personajes para obtener los detalles de cada uno
           await Promise.all(
             characterIds.map(async (characterId) => {
-              //Este endpoint recibe el ID del personaje como parámetro
+              // Este endpoint recibe el ID del personaje como parámetro
               const response = await fetch(
                 `https://www.swapi.tech/api/people/${characterId}/`
               );
@@ -77,7 +77,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-
       // Función para recuperar la lista de vehículos
       fetchVehicles: async (retryCount = 0) => {
         try {
@@ -105,7 +104,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error al recuperar los vehículos:", error);
         }
       },
-
       // Función para obtener los detalles de todos los vehículos
       fetchVehicleDetails: async (vehicleIds) => {
         try {
@@ -135,7 +133,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
         }
       },
-
       // Función para recuperar la lista de planetas
       fetchPlanets: async (retryCount = 0) => {
         try {
@@ -163,7 +160,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error al recuperar los planetas:", error);
         }
       },
-
       // Función para obtener los detalles de un planeta específico
       fetchPlanetDetails: async (planetIds) => {
         try {
@@ -172,7 +168,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           // Iterar sobre todos los IDs de planetas para obtener los detalles de cada uno
           await Promise.all(
             planetIds.map(async (planetId) => {
-              //Este endpoint recibe el ID del planeta como parámetro
+              // Este endpoint recibe el ID del planeta como parámetro
               const response = await fetch(
                 `https://www.swapi.tech/api/planets/${planetId}/`
               );
@@ -214,7 +210,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
         }
       },
-
       // Función para alternar el estado de favorito para un planeta
       toggleFavoritePlanet: (planetId) => {
         const store = getStore();
@@ -233,7 +228,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
         }
       },
-
       // Función para alternar el estado de favorito para un vehículo
       toggleFavoriteVehicle: (vehicleId) => {
         const store = getStore();

@@ -4,24 +4,31 @@ import { Context } from "../store/appContext";
 const Vehicles = () => {
   const { store, actions } = useContext(Context);
 
-  // Efecto para cargar la lista de vehículos si está vacía
   useEffect(() => {
+    // Obtener los vehículos si el tamaño de la lista de vehículos es 0
     if (store.vehicles.length === 0) {
       actions.fetchVehicles();
     }
   }, [actions, store.vehicles]);
 
-  // Efecto para cargar los detalles de los vehículos una vez que se ha cargado la lista de vehículos
   useEffect(() => {
+    // Obtener los detalles de todos los vehículos si el tamaño de la lista de vehículos es mayor que 0
     if (store.vehicles.length > 0) {
+      // Obtener los IDs de todos los vehículos
       const vehicleIds = store.vehicles.map((vehicle) => vehicle.uid);
+      // Llamar a la función para obtener los detalles de los vehículos usando sus IDs
       actions.fetchVehicleDetails(vehicleIds);
     }
   }, [actions, store.vehicles]);
 
-  // Toggle favorite status for vehicle
+  // Alternar el estado favorito para un vehículo
   const handleToggleFavorite = (vehicleId) => {
     actions.toggleFavoriteVehicle(vehicleId);
+  };
+
+  // Función para obtener la URL de la imagen del vehículo
+  const getVehicleImageUrl = (vehicleId) => {
+    return `https://starwars-visualguide.com/assets/img/vehicles/${vehicleId}.jpg`;
   };
 
   return (
@@ -31,11 +38,16 @@ const Vehicles = () => {
         {store.vehicles.map((vehicle) => (
           <div key={vehicle.uid} className="col">
             <div className="card">
+              <img
+                src={getVehicleImageUrl(vehicle.uid)}
+                className="card-img-top"
+                alt={vehicle.name}
+              />
               <div className="card-body">
                 <h5 className="card-title text-success display-6 fw-bold">
                   {vehicle.name}
                 </h5>
-                {/* Mostrar los detalles del vehículo si están disponibles */}
+                {/* Comprobar si existen los detalles del vehículo antes de mostrarlos */}
                 {store.vehicleDetails[vehicle.uid] && (
                   <div>
                     <p className="card-text fw-bold">
@@ -58,13 +70,13 @@ const Vehicles = () => {
                     </div>
                   </div>
                 )}
-                {/* Mostrar mensaje de carga si los detalles del vehículo están siendo cargados */}
+                {/* Mostrar mensaje de carga si se están recuperando los detalles del vehículo */}
                 {!store.vehicleDetails[vehicle.uid] && (
                   <p className="text-muted">Loading...</p>
                 )}
-                {/* Mostrar mensaje de error si falla la carga de los detalles del vehículo */}
+                {/* Mostrar mensaje de error si falla la recuperación de los detalles del vehículo */}
                 {store.vehicleDetails[vehicle.uid] === false && (
-                  <p className="text-danger">Error fetching.</p>
+                  <p className="text-danger">Error fetching data.</p>
                 )}
               </div>
             </div>
