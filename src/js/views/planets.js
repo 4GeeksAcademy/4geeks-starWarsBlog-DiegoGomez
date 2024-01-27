@@ -1,8 +1,11 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
+// Este import es funcional después de instalar react-bootstrap
+import Modal from "react-bootstrap/Modal";
 
 const Planets = () => {
   const { store, actions } = useContext(Context);
+  const [selectedPlanet, setSelectedPlanet] = useState(null);
 
   useEffect(() => {
     // Obtener los planetas si el tamaño de la lista de planetas es 0
@@ -24,6 +27,16 @@ const Planets = () => {
   // Alternar el estado favorito para un planeta
   const handleToggleFavorite = (planetId) => {
     actions.toggleFavoritePlanet(planetId);
+  };
+
+  // Para mostrar el planeta, se guarda su ID en el estado selectedPlanet
+  const handleShowDetails = (planetId) => {
+    setSelectedPlanet(planetId);
+  };
+
+  // Para cerrar el modal, se pone el estado selectedPlanet a null
+  const handleCloseDetails = () => {
+    setSelectedPlanet(null);
   };
 
   // Función para obtener la URL de la imagen del planeta
@@ -66,7 +79,12 @@ const Planets = () => {
                       >
                         <i className="fa-regular fa-heart fs-1"></i>
                       </button>
-                      <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                      <button
+                        className="border border-0 bg-transparent"
+                        onClick={() => handleShowDetails(planet.uid)}
+                      >
+                        <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -83,6 +101,41 @@ const Planets = () => {
           </div>
         ))}
       </div>
+      {/* Modal, se muestra si detecta que se ha hecho click en algún planeta (
+      se ha seleccionado un planeta).
+      ) */}
+      <Modal show={selectedPlanet !== null} onHide={handleCloseDetails}>
+        <Modal.Header closeButton>
+          <Modal.Title>Planet Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Accedo a los detalles del planeta que ha sido seleccionado, y en cada p escojo que campo
+          mostrar */}
+          {selectedPlanet !== null &&
+            store.planetDetails[selectedPlanet] && (
+              <div>
+                <p className="fw-bold">
+                  Name: {store.planetDetails[selectedPlanet].name}
+                </p>
+                <p className="fw-bold">
+                  Climate:{" "}
+                  {store.planetDetails[selectedPlanet].climate}
+                </p>
+                <p className="fw-bold">
+                  Orbital period:{" "}
+                  {store.planetDetails[selectedPlanet].orbital_period}
+                </p>
+                <p className="fw-bold">
+                  Surface water: {store.planetDetails[selectedPlanet].surface_water}
+                </p>
+                <p className="fw-bold">
+                  Rotation period:{" "}
+                  {store.planetDetails[selectedPlanet].rotation_period}
+                </p>
+              </div>
+            )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

@@ -1,8 +1,11 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
+// Este import es funcional después de instalar react-bootstrap
+import Modal from "react-bootstrap/Modal";
 
 const Characters = () => {
   const { store, actions } = useContext(Context);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
 
   useEffect(() => {
     // Obtener los personajes si el tamaño de la lista de personajes es 0
@@ -24,6 +27,16 @@ const Characters = () => {
   // Alternar el estado favorito para un personaje
   const handleToggleFavorite = (characterId) => {
     actions.toggleFavoriteCharacter(characterId);
+  };
+
+  // Para mostrar el personaje, se guarda su ID en el estado selectedCharacter
+  const handleShowDetails = (characterId) => {
+    setSelectedCharacter(characterId);
+  };
+
+  // Para cerrar el modal, se pone el estado selectedCharacter a null
+  const handleCloseDetails = () => {
+    setSelectedCharacter(null);
   };
 
   // Función para obtener la URL de la imagen del personaje
@@ -74,7 +87,12 @@ const Characters = () => {
                           }`}
                         ></i>
                       </button>
-                      <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                      <button
+                        className="border border-0 bg-transparent"
+                        onClick={() => handleShowDetails(character.uid)}
+                      >
+                        <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -91,6 +109,41 @@ const Characters = () => {
           </div>
         ))}
       </div>
+      {/* Modal, se muestra si detecta que se ha hecho click en algún personaje (
+      se ha seleccionado un personaje).
+      ) */}
+      <Modal show={selectedCharacter !== null} onHide={handleCloseDetails}>
+        <Modal.Header closeButton>
+          <Modal.Title>Character Details</Modal.Title>
+        </Modal.Header>
+        {/* Accedo a los detalles del personaje que ha sido seleccionado, y en cada p escojo que campo
+          mostrar */}
+        <Modal.Body>
+          {selectedCharacter !== null &&
+            store.characterDetails[selectedCharacter] && (
+              <div>
+                <p className="fw-bold">
+                  Name: {store.characterDetails[selectedCharacter].name}
+                </p>
+                <p className="fw-bold">
+                  Birth Year:{" "}
+                  {store.characterDetails[selectedCharacter].birth_year}
+                </p>
+                <p className="fw-bold">
+                  Height: {store.characterDetails[selectedCharacter].height}
+                </p>
+                <p className="fw-bold">
+                  Homeworld:{" "}
+                  {store.characterDetails[selectedCharacter].homeworld}
+                </p>
+                <p className="fw-bold">
+                  Skin Color:{" "}
+                  {store.characterDetails[selectedCharacter].skin_color}
+                </p>
+              </div>
+            )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
