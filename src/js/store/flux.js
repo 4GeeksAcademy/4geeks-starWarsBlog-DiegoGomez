@@ -3,7 +3,7 @@ import { createContext } from "react";
 
 const StoreContext = createContext(null);
 
-const getState = ({ setStore }) => {
+const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
       characters: [], // Almacena la lista de personajes
@@ -12,6 +12,7 @@ const getState = ({ setStore }) => {
       characterDetails: {}, // Almacena los detalles de cada personaje por su ID
       planetDetails: {}, // Almacena los detalles de cada planeta por su ID
       vehicleDetails: {}, // Almacena los detalles de cada vehículo por su ID
+      favoriteCharacters: [], // Almacena los IDs de los personajes favoritos
     },
     actions: {
       // Función para recuperar la lista de personajes
@@ -45,7 +46,8 @@ const getState = ({ setStore }) => {
       // Función para recuperar los detalles de todos los personajes
       fetchCharactersDetails: async (characterIds) => {
         try {
-          const characterDetails = {};
+          const store = getStore()
+          const charactersDetails = store.characterDetails
           // Iterar sobre todos los IDs de personajes para obtener los detalles de cada uno
           await Promise.all(
             characterIds.map(async (characterId) => {
@@ -61,11 +63,11 @@ const getState = ({ setStore }) => {
               }
               const data = await response.json();
               // Almacenar los detalles del personaje en el objeto characterDetails usando su ID como clave
-              characterDetails[characterId] = data.result.properties;
+              charactersDetails[characterId] = data.result.properties;
             })
           );
           // Actualizar el estado con los detalles de los personajes
-          setStore({ characterDetails });
+          setStore({ charactersDetails });
         } catch (error) {
           console.error(
             "Error al recuperar los detalles de los personajes:",
@@ -74,12 +76,25 @@ const getState = ({ setStore }) => {
         }
       },
 
-      // Función para obtener la lista de vehículos
-      fetchVehicles: async () => {
+       // Función para recuperar la lista de vehículos
+       fetchVehicles: async (retryCount = 0) => {
         try {
           const response = await fetch("https://www.swapi.tech/api/vehicles/");
           if (!response.ok) {
-            throw new Error("Error al recuperar los vehículos");
+            if (response.status === 429) {
+              // Si se recibe un código de estado 429 (demasiadas solicitudes), intentar nuevamente después de 5 segundos
+              const delay = 5000;
+              await new Promise((resolve) => setTimeout(resolve, delay));
+              // El número máximo de reintentos es 3
+              if (retryCount < 3) {
+                // Reintentar la solicitud incrementando el contador de reintentos en 1 cada vez
+                return actions.fetchVehicles(retryCount + 1);
+              } else {
+                throw new Error("Límite máximo de reintentos alcanzado");
+              }
+            } else {
+              throw new Error("Error al recuperar los vehículos");
+            }
           }
           const data = await response.json();
           // Actualizar el estado con la lista de vehículos obtenida
@@ -92,7 +107,8 @@ const getState = ({ setStore }) => {
       // Función para obtener los detalles de todos los vehículos
       fetchVehicleDetails: async (vehicleIds) => {
         try {
-          const vehicleDetails = {};
+          const store = getStore()
+          const vehiclesDetails = store.vehicleDetails
           await Promise.all(
             vehicleIds.map(async (vehicleId) => {
               const response = await fetch(
@@ -105,11 +121,11 @@ const getState = ({ setStore }) => {
               }
               const data = await response.json();
               // Almacenar los detalles del vehículo en el objeto vehicleDetails usando su ID como clave
-              vehicleDetails[vehicleId] = data.result.properties;
+              vehiclesDetails[vehicleId] = data.result.properties;
             })
           );
           // Actualizar el estado con los detalles de los vehículos
-          setStore({ vehicleDetails });
+          setStore({ vehiclesDetails });
         } catch (error) {
           console.error(
             "Error al recuperar los detalles de los vehículos:",
@@ -118,12 +134,25 @@ const getState = ({ setStore }) => {
         }
       },
 
-      // Función para obtener la lista de planetas
-      fetchPlanets: async () => {
+      // Función para recuperar la lista de planetas
+      fetchPlanets: async (retryCount = 0) => {
         try {
           const response = await fetch("https://www.swapi.tech/api/planets/");
           if (!response.ok) {
-            throw new Error("Error al recuperar los planetas");
+            if (response.status === 429) {
+              // Si se recibe un código de estado 429 (demasiadas solicitudes), intentar nuevamente después de 5 segundos
+              const delay = 5000;
+              await new Promise((resolve) => setTimeout(resolve, delay));
+              // El número máximo de reintentos es 3
+              if (retryCount < 3) {
+                // Reintentar la solicitud incrementando el contador de reintentos en 1 cada vez
+                return actions.fetchPlanets(retryCount + 1);
+              } else {
+                throw new Error("Límite máximo de reintentos alcanzado");
+              }
+            } else {
+              throw new Error("Error al recuperar los personajes");
+            }
           }
           const data = await response.json();
           // Actualizar el estado con la lista de planetas obtenida
@@ -133,10 +162,12 @@ const getState = ({ setStore }) => {
         }
       },
 
+
       // Función para obtener los detalles de un planeta específico
       fetchPlanetDetails: async (planetIds) => {
         try {
-          const planetDetails = {};
+          const store = getStore()
+          const planetsDetails = store.planetDetails
           // Iterar sobre todos los IDs de planetas para obtener los detalles de cada uno
           await Promise.all(
             planetIds.map(async (planetId) => {
@@ -152,11 +183,11 @@ const getState = ({ setStore }) => {
               }
               const data = await response.json();
               // Almacenar los detalles del planeta en el objeto planetDetails usando su ID como clave
-              planetDetails[planetId] = data.result.properties;
+              planetsDetails[planetId] = data.result.properties;
             })
           );
           // Actualizar el estado con los detalles de los planetas
-          setStore({ planetDetails });
+          setStore({ planetsDetails });
         } catch (error) {
           console.error(
             "Error al recuperar los detalles de los planetas:",
@@ -164,6 +195,23 @@ const getState = ({ setStore }) => {
           );
         }
       },
+      toggleFavorite: (store, characterId) => {
+        // Toggle de personajes favoritos
+        const favoriteIndex = store.favoriteCharacters.indexOf(characterId);
+        if (favoriteIndex === -1) {
+          setStore({
+            ...store,
+            favoriteCharacters: [...store.favoriteCharacters, characterId],
+          });
+        } else {
+          setStore({
+            ...store,
+            favoriteCharacters: store.favoriteCharacters.filter(
+              (id) => id !== characterId
+            ),
+          });
+        }
+      }
     },
   };
 };

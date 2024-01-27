@@ -44,6 +44,11 @@ const Planets = () => {
                     <p className="card-text fw-bold">
                       Gravity: {store.planetDetails[planet.uid].gravity}
                     </p>
+                    <div className="d-flex">
+                      <i className="fa-regular fa-heart fs-1"></i>
+                      <i className="fa-solid fa-heart fs-1 ms-3 text-danger"></i>
+                      <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                    </div>
                   </div>
                 )}
                 {/* Mostrar mensaje de carga si se están recuperando los detalles del planeta */}

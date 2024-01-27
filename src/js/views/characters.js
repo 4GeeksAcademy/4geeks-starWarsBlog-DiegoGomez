@@ -21,6 +21,10 @@ const Characters = () => {
     }
   }, [actions, store.characters]);
 
+  const handleToggleFavorite = (characterId) => {
+    actions.toggleFavorite(store, characterId);
+  };
+
   return (
     <div className="p-5 mt-5">
       <h1 className="text-center mb-4 text-white">Characters</h1>
@@ -46,6 +50,14 @@ const Characters = () => {
                       Eye color:{" "}
                       {store.characterDetails[character.uid].eye_color}
                     </p>
+                    <div className="d-flex">
+                      <button className="border border-0 bg-transparent"
+                        onClick={() => handleToggleFavorite(character.uid)}
+                      >
+                        <i className="fa-regular fa-heart fs-1"></i>
+                      </button>
+                      <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                    </div>
                   </div>
                 )}
                 {/* Mostrar mensaje de carga si se están recuperando los detalles del personaje */}
