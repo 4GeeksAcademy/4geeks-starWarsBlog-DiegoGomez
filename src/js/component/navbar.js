@@ -8,52 +8,28 @@ export const Navbar = () => {
   const [favoriteVehicles, setFavoriteVehicles] = useState([]);
   const [favoritePlanets, setFavoritePlanets] = useState([]);
 
+  // Efectos para actualizar la lista de favoritos cuando cambian los datos de la tienda
   useEffect(() => {
-    // Update favorite characters list whenever favoriteCharacters changes
-    const characters = store.favoriteCharacters.map((characterId) => {
-      const character = store.characterDetails[characterId];
-      return character ? character.name : null;
-    });
-    setFavoriteCharacters(characters.filter(Boolean));
+    updateFavorites(store.favoriteCharacters, store.characterDetails, setFavoriteCharacters);
   }, [store.favoriteCharacters, store.characterDetails]);
 
   useEffect(() => {
-    // Update favorite characters list whenever favoriteCharacters changes
-    const vehicles = store.favoriteVehicles.map((vehicleId) => {
-      const vehicle = store.vehicleDetails[vehicleId];
-      return vehicle ? vehicle.name : null;
-    });
-    setFavoriteCharacters(vehicles.filter(Boolean));
+    updateFavorites(store.favoriteVehicles, store.vehicleDetails, setFavoriteVehicles);
   }, [store.favoriteVehicles, store.vehicleDetails]);
 
   useEffect(() => {
-    // Update favorite characters list whenever favoriteCharacters changes
-    const planets = store.favoritePlanets.map((planetId) => {
-      const planet = store.planetDetails[planetId];
-      return planet ? planet.name : null;
-    });
-    setFavoritePlanets(planets.filter(Boolean));
+    updateFavorites(store.favoritePlanets, store.planetDetails, setFavoritePlanets);
   }, [store.favoritePlanets, store.planetDetails]);
 
-  const handleRemoveCharacter = (characterId) => {
-    // Remove character from favorites
-    setFavoriteCharacters((prevFavorites) =>
-      prevFavorites.filter((name) => name !== characterId)
-    );
+  // Función para actualizar la lista de favoritos
+  const updateFavorites = (favoriteIds, details, setFavorites) => {
+    const favorites = favoriteIds.map(id => details[id]?.name).filter(Boolean);
+    setFavorites(favorites);
   };
 
-  const handleRemoveVehicle = (vehicleId) => {
-    // Remove character from favorites
-    setFavoriteVehicles((prevFavorites) =>
-      prevFavorites.filter((name) => name !== vehicleId)
-    );
-  };
-
-  const handleRemovePlanet = (planetId) => {
-    // Remove character from favorites
-    setFavoritePlanets((prevFavorites) =>
-      prevFavorites.filter((name) => name !== planetId)
-    );
+  // Función para eliminar un elemento de la lista de favoritos
+  const handleRemoveFavorite = (itemId, setFavorites) => {
+    setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite !== itemId));
   };
 
   return (
@@ -75,85 +51,38 @@ export const Navbar = () => {
       </div>
       <div className="col-4 text-warning">
         <h1 className="mx-3 display-6">Content</h1>
-        <a
-          href="/characters"
-          className="text-decoration-none text-dark text-white mx-3"
-        >
+        <a href="/characters" className="text-decoration-none text-dark text-white mx-3">
           Characters
         </a>
-        <a
-          href="/vehicles"
-          className="text-decoration-none text-dark text-white mx-3"
-        >
+        <a href="/vehicles" className="text-decoration-none text-dark text-white mx-3">
           Vehicles
         </a>
-        <a
-          href="/planets"
-          className="text-decoration-none text-dark text-white mx-3"
-        >
+        <a href="/planets" className="text-decoration-none text-dark text-white mx-3">
           Planets
         </a>
       </div>
       <div className="col-4">
         <h1 className="text-warning display-6">Favorites</h1>
-        {favoriteCharacters.length > 0 && (
-          <div className="mt-3">
-            {favoriteCharacters.map((character, index) => (
-              <div
-                key={index}
-                className="d-flex justify-content-between align-items-center mb-2"
-              >
-                <p>{character}</p>
-
-                <button
-                  className="btn btn-warning ms-2"
-                  onClick={() => handleRemoveCharacter(character)}
-                >
-                  <i className="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {favoriteVehicles.length > 0 && (
-          <div className="mt-3">
-            {favoriteVehicles.map((vehicle, index) => (
-              <div
-                key={index}
-                className="d-flex justify-content-between align-items-center mb-2"
-              >
-                <p>{vehicle}</p>
-
-                <button
-                  className="btn btn-warning ms-2"
-                  onClick={() => handleRemoveVehicle(vehicle)}
-                >
-                  <i className="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {favoritePlanets.length > 0 && (
-          <div className="mt-3">
-            {favoritePlanets.map((planet, index) => (
-              <div
-                key={index}
-                className="d-flex justify-content-between align-items-center mb-2"
-              >
-                <p>{planet}</p>
-
-                <button
-                  className="btn btn-warning ms-2"
-                  onClick={() => handleRemovePlanet(planet)}
-                >
-                  <i className="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        {renderFavorites(favoriteCharacters, handleRemoveFavorite, setFavoriteCharacters)}
+        {renderFavorites(favoriteVehicles, handleRemoveFavorite, setFavoriteVehicles)}
+        {renderFavorites(favoritePlanets, handleRemoveFavorite, setFavoritePlanets)}
       </div>
+    </div>
+  );
+};
+
+// Función para renderizar la lista de elementos favoritos
+const renderFavorites = (favorites, handleRemove, setFavorites) => {
+  return favorites.length > 0 && (
+    <div className="mt-3">
+      {favorites.map((item, index) => (
+        <div key={index} className="d-flex justify-content-between align-items-center mb-2">
+          <p>{item}</p>
+          <button className="btn btn-warning ms-2" onClick={() => handleRemove(item, setFavorites)}>
+            <i className="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      ))}
     </div>
   );
 };
