@@ -5,6 +5,8 @@ import img from "../../img/boba-fett.png";
 export const Navbar = () => {
   const { store } = useContext(Context);
   const [favoriteCharacters, setFavoriteCharacters] = useState([]);
+  const [favoriteVehicles, setFavoriteVehicles] = useState([]);
+  const [favoritePlanets, setFavoritePlanets] = useState([]);
 
   useEffect(() => {
     // Update favorite characters list whenever favoriteCharacters changes
@@ -12,13 +14,45 @@ export const Navbar = () => {
       const character = store.characterDetails[characterId];
       return character ? character.name : null;
     });
-    setFavoriteCharacters(characters.filter(Boolean)); // Filter out null values
+    setFavoriteCharacters(characters.filter(Boolean));
   }, [store.favoriteCharacters, store.characterDetails]);
 
-  const handleRemoveFavorite = (characterId) => {
+  useEffect(() => {
+    // Update favorite characters list whenever favoriteCharacters changes
+    const vehicles = store.favoriteVehicles.map((vehicleId) => {
+      const vehicle = store.vehicleDetails[vehicleId];
+      return vehicle ? vehicle.name : null;
+    });
+    setFavoriteCharacters(vehicles.filter(Boolean));
+  }, [store.favoriteVehicles, store.vehicleDetails]);
+
+  useEffect(() => {
+    // Update favorite characters list whenever favoriteCharacters changes
+    const planets = store.favoritePlanets.map((planetId) => {
+      const planet = store.planetDetails[planetId];
+      return planet ? planet.name : null;
+    });
+    setFavoritePlanets(planets.filter(Boolean));
+  }, [store.favoritePlanets, store.planetDetails]);
+
+  const handleRemoveCharacter = (characterId) => {
     // Remove character from favorites
     setFavoriteCharacters((prevFavorites) =>
       prevFavorites.filter((name) => name !== characterId)
+    );
+  };
+
+  const handleRemoveVehicle = (vehicleId) => {
+    // Remove character from favorites
+    setFavoriteVehicles((prevFavorites) =>
+      prevFavorites.filter((name) => name !== vehicleId)
+    );
+  };
+
+  const handleRemovePlanet = (planetId) => {
+    // Remove character from favorites
+    setFavoritePlanets((prevFavorites) =>
+      prevFavorites.filter((name) => name !== planetId)
     );
   };
 
@@ -73,7 +107,45 @@ export const Navbar = () => {
 
                 <button
                   className="btn btn-warning ms-2"
-                  onClick={() => handleRemoveFavorite(character)}
+                  onClick={() => handleRemoveCharacter(character)}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {favoriteVehicles.length > 0 && (
+          <div className="mt-3">
+            {favoriteVehicles.map((vehicle, index) => (
+              <div
+                key={index}
+                className="d-flex justify-content-between align-items-center mb-2"
+              >
+                <p>{vehicle}</p>
+
+                <button
+                  className="btn btn-warning ms-2"
+                  onClick={() => handleRemoveVehicle(vehicle)}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {favoritePlanets.length > 0 && (
+          <div className="mt-3">
+            {favoritePlanets.map((planet, index) => (
+              <div
+                key={index}
+                className="d-flex justify-content-between align-items-center mb-2"
+              >
+                <p>{planet}</p>
+
+                <button
+                  className="btn btn-warning ms-2"
+                  onClick={() => handleRemovePlanet(planet)}
                 >
                   <i className="fa-solid fa-trash"></i>
                 </button>
