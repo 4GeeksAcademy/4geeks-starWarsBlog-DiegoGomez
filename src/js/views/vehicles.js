@@ -73,12 +73,29 @@ const Vehicles = () => {
                       Passengers: {store.vehicleDetails[vehicle.uid].passengers}
                     </p>
                     <div className="d-flex">
-                      <button
+                    <button
                         className="border border-0 bg-transparent"
                         onClick={() => handleToggleFavorite(vehicle.uid)}
                       >
-                        <i className="fa-regular fa-heart fs-1"></i>
+                        <i
+                          className={`fa-regular fs-1 ${
+                            store.favoriteVehicles.includes(vehicle.uid)
+                              ? "fa-solid fa-heart text-danger"
+                              : "fa-heart"
+                          }`}
+                        ></i>
                       </button>
+                      {/* Mostrar el botón de la basura solo si el vehículo es favorito */}
+                      {store.favoriteVehicles.includes(vehicle.uid) && (
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleToggleFavorite(vehicle.uid)}
+                        >
+                          <i
+                            className={`fa-solid fa-trash text-warning fs-1 ms-3`}
+                          ></i>
+                        </button>
+                      )}
                       <button
                         className="border border-0 bg-transparent"
                         onClick={() => handleShowDetails(vehicle.uid)}

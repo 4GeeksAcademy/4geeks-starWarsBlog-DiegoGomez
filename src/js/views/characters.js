@@ -60,7 +60,6 @@ const Characters = () => {
                 <h5 className="card-title text-primary display-6 fw-bold">
                   {character.name}
                 </h5>
-                {/* Comprobar si existen los detalles del personaje antes de mostrarlos */}
                 {store.characterDetails[character.uid] && (
                   <div>
                     <p className="card-text fw-bold">
@@ -87,6 +86,17 @@ const Characters = () => {
                           }`}
                         ></i>
                       </button>
+                      {/* Mostrar el botón de la basura solo si el personaje es favorito */}
+                      {store.favoriteCharacters.includes(character.uid) && (
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleToggleFavorite(character.uid)}
+                        >
+                          <i
+                            className={`fa-solid fa-trash text-warning fs-1 ms-3`}
+                          ></i>
+                        </button>
+                      )}
                       <button
                         className="border border-0 bg-transparent"
                         onClick={() => handleShowDetails(character.uid)}
@@ -96,11 +106,9 @@ const Characters = () => {
                     </div>
                   </div>
                 )}
-                {/* Mostrar mensaje de carga si se están recuperando los detalles del personaje */}
                 {!store.characterDetails[character.uid] && (
                   <p className="text-muted">Loading...</p>
                 )}
-                {/* Mostrar mensaje de error si falla la recuperación de los detalles del personaje */}
                 {store.characterDetails[character.uid] === false && (
                   <p className="text-danger">Error fetching data.</p>
                 )}
@@ -109,15 +117,10 @@ const Characters = () => {
           </div>
         ))}
       </div>
-      {/* Modal, se muestra si detecta que se ha hecho click en algún personaje (
-      se ha seleccionado un personaje).
-      ) */}
       <Modal show={selectedCharacter !== null} onHide={handleCloseDetails}>
         <Modal.Header closeButton>
           <Modal.Title>Character Details</Modal.Title>
         </Modal.Header>
-        {/* Accedo a los detalles del personaje que ha sido seleccionado, y en cada p escojo que campo
-          mostrar */}
         <Modal.Body>
           {selectedCharacter !== null &&
             store.characterDetails[selectedCharacter] && (

@@ -73,12 +73,29 @@ const Planets = () => {
                       Gravity: {store.planetDetails[planet.uid].gravity}
                     </p>
                     <div className="d-flex">
-                      <button
+                    <button
                         className="border border-0 bg-transparent"
                         onClick={() => handleToggleFavorite(planet.uid)}
                       >
-                        <i className="fa-regular fa-heart fs-1"></i>
+                        <i
+                          className={`fa-regular fs-1 ${
+                            store.favoritePlanets.includes(planet.uid)
+                              ? "fa-solid fa-heart text-danger"
+                              : "fa-heart"
+                          }`}
+                        ></i>
                       </button>
+                      {/* Mostrar el botón de la basura solo si el vehículo es favorito */}
+                      {store.favoritePlanets.includes(planet.uid) && (
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleToggleFavorite(planet.uid)}
+                        >
+                          <i
+                            className={`fa-solid fa-trash text-warning fs-1 ms-3`}
+                          ></i>
+                        </button>
+                      )}
                       <button
                         className="border border-0 bg-transparent"
                         onClick={() => handleShowDetails(planet.uid)}
@@ -111,29 +128,28 @@ const Planets = () => {
         <Modal.Body>
           {/* Accedo a los detalles del planeta que ha sido seleccionado, y en cada p escojo que campo
           mostrar */}
-          {selectedPlanet !== null &&
-            store.planetDetails[selectedPlanet] && (
-              <div>
-                <p className="fw-bold">
-                  Name: {store.planetDetails[selectedPlanet].name}
-                </p>
-                <p className="fw-bold">
-                  Climate:{" "}
-                  {store.planetDetails[selectedPlanet].climate}
-                </p>
-                <p className="fw-bold">
-                  Orbital period:{" "}
-                  {store.planetDetails[selectedPlanet].orbital_period}
-                </p>
-                <p className="fw-bold">
-                  Surface water: {store.planetDetails[selectedPlanet].surface_water}
-                </p>
-                <p className="fw-bold">
-                  Rotation period:{" "}
-                  {store.planetDetails[selectedPlanet].rotation_period}
-                </p>
-              </div>
-            )}
+          {selectedPlanet !== null && store.planetDetails[selectedPlanet] && (
+            <div>
+              <p className="fw-bold">
+                Name: {store.planetDetails[selectedPlanet].name}
+              </p>
+              <p className="fw-bold">
+                Climate: {store.planetDetails[selectedPlanet].climate}
+              </p>
+              <p className="fw-bold">
+                Orbital period:{" "}
+                {store.planetDetails[selectedPlanet].orbital_period}
+              </p>
+              <p className="fw-bold">
+                Surface water:{" "}
+                {store.planetDetails[selectedPlanet].surface_water}
+              </p>
+              <p className="fw-bold">
+                Rotation period:{" "}
+                {store.planetDetails[selectedPlanet].rotation_period}
+              </p>
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     </div>

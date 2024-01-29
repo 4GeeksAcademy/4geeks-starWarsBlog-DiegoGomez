@@ -27,10 +27,6 @@ export const Navbar = () => {
     setFavorites(favorites);
   };
 
-  // Función para eliminar un elemento de la lista de favoritos
-  const handleRemoveFavorite = (itemId, setFavorites) => {
-    setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite !== itemId));
-  };
 
   return (
     <div className="d-flex bg-dark text-white p-5 align-items-center">
@@ -63,24 +59,21 @@ export const Navbar = () => {
       </div>
       <div className="col-4">
         <h1 className="text-warning display-6">Favorites</h1>
-        {renderFavorites(favoriteCharacters, handleRemoveFavorite, setFavoriteCharacters)}
-        {renderFavorites(favoriteVehicles, handleRemoveFavorite, setFavoriteVehicles)}
-        {renderFavorites(favoritePlanets, handleRemoveFavorite, setFavoritePlanets)}
+        {renderFavorites(favoriteCharacters, setFavoriteCharacters)}
+        {renderFavorites(favoriteVehicles,  setFavoriteVehicles)}
+        {renderFavorites(favoritePlanets,  setFavoritePlanets)}
       </div>
     </div>
   );
 };
 
 // Función para renderizar la lista de elementos favoritos
-const renderFavorites = (favorites, handleRemove, setFavorites) => {
+const renderFavorites = (favorites) => {
   return favorites.length > 0 && (
     <div className="mt-3">
       {favorites.map((item, index) => (
         <div key={index} className="d-flex justify-content-between align-items-center mb-2">
           <p>{item}</p>
-          <button className="btn btn-warning ms-2" onClick={() => handleRemove(item, setFavorites)}>
-            <i className="fa-solid fa-trash"></i>
-          </button>
         </div>
       ))}
     </div>
