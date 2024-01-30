@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
 // Este import es funcional después de instalar react-bootstrap
-import Modal from "react-bootstrap/Modal";
+import { Link } from "react-router-dom";
 
 const Planets = () => {
   const { store, actions } = useContext(Context);
@@ -96,12 +96,14 @@ const Planets = () => {
                           ></i>
                         </button>
                       )}
-                      <button
-                        className="border border-0 bg-transparent"
-                        onClick={() => handleShowDetails(planet.uid)}
-                      >
-                        <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
-                      </button>
+                     <Link to={`/details/planets/${planet.uid}`}>
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleShowDetails(planet.uid)}
+                        >
+                          <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -118,40 +120,6 @@ const Planets = () => {
           </div>
         ))}
       </div>
-      {/* Modal, se muestra si detecta que se ha hecho click en algún planeta (
-      se ha seleccionado un planeta).
-      ) */}
-      <Modal show={selectedPlanet !== null} onHide={handleCloseDetails}>
-        <Modal.Header closeButton>
-          <Modal.Title>Planet Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* Accedo a los detalles del planeta que ha sido seleccionado, y en cada p escojo que campo
-          mostrar */}
-          {selectedPlanet !== null && store.planetDetails[selectedPlanet] && (
-            <div>
-              <p className="fw-bold">
-                Name: {store.planetDetails[selectedPlanet].name}
-              </p>
-              <p className="fw-bold">
-                Climate: {store.planetDetails[selectedPlanet].climate}
-              </p>
-              <p className="fw-bold">
-                Orbital period:{" "}
-                {store.planetDetails[selectedPlanet].orbital_period}
-              </p>
-              <p className="fw-bold">
-                Surface water:{" "}
-                {store.planetDetails[selectedPlanet].surface_water}
-              </p>
-              <p className="fw-bold">
-                Rotation period:{" "}
-                {store.planetDetails[selectedPlanet].rotation_period}
-              </p>
-            </div>
-          )}
-        </Modal.Body>
-      </Modal>
     </div>
   );
 };

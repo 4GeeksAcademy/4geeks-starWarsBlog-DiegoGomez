@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
 // Este import es funcional después de instalar react-bootstrap
-import Modal from "react-bootstrap/Modal";
+import { Link } from "react-router-dom";
 
 const Vehicles = () => {
   const { store, actions } = useContext(Context);
@@ -30,8 +30,8 @@ const Vehicles = () => {
   };
 
   // Para mostrar el vehículo, se guarda su ID en el estado selectedVehicle
-  const handleShowDetails = (characterId) => {
-    setSelectedVehicle(characterId);
+  const handleShowDetails = (vehicleId) => {
+    setSelectedVehicle(vehicleId);
   };
 
   // Para cerrar el modal, se pone el estado selectedVehicle a null
@@ -96,12 +96,14 @@ const Vehicles = () => {
                           ></i>
                         </button>
                       )}
-                      <button
-                        className="border border-0 bg-transparent"
-                        onClick={() => handleShowDetails(vehicle.uid)}
-                      >
-                        <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
-                      </button>
+                      <Link to={`/details/vehicles/${vehicle.uid}`}>
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleShowDetails(vehicle.uid)}
+                        >
+                          <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -118,41 +120,6 @@ const Vehicles = () => {
           </div>
         ))}
       </div>
-      {/* Modal, se muestra si detecta que se ha hecho click en algún vehículo (
-      se ha seleccionado un vehículo).
-      ) */}
-      <Modal show={selectedVehicle !== null} onHide={handleCloseDetails}>
-        <Modal.Header closeButton>
-          <Modal.Title>Vehicle Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* Accedo a los detalles del vehículo que ha sido seleccionado, y en cada p escojo que campo
-          mostrar */}
-          {selectedVehicle !== null &&
-            store.vehicleDetails[selectedVehicle] && (
-              <div>
-                <p className="fw-bold">
-                  Name: {store.vehicleDetails[selectedVehicle].name}
-                </p>
-                <p className="fw-bold">
-                  Consumables:{" "}
-                  {store.vehicleDetails[selectedVehicle].consumables}
-                </p>
-                <p className="fw-bold">
-                  Cost in credits:{" "}
-                  {store.vehicleDetails[selectedVehicle].cost_in_credits}
-                </p>
-                <p className="fw-bold">
-                  Crew: {store.vehicleDetails[selectedVehicle].crew}
-                </p>
-                <p className="fw-bold">
-                  Manufacturer:{" "}
-                  {store.vehicleDetails[selectedVehicle].manufacturer}
-                </p>
-              </div>
-            )}
-        </Modal.Body>
-      </Modal>
     </div>
   );
 };

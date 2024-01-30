@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
 // Este import es funcional después de instalar react-bootstrap
-import Modal from "react-bootstrap/Modal";
+import { Link } from "react-router-dom";
 
 const Characters = () => {
   const { store, actions } = useContext(Context);
@@ -43,6 +43,8 @@ const Characters = () => {
   const getCharacterImageUrl = (characterId) => {
     return `https://starwars-visualguide.com/assets/img/characters/${characterId}.jpg`;
   };
+
+  console.log(store.characters[0]);
 
   return (
     <div className="p-5 mt-5">
@@ -97,12 +99,14 @@ const Characters = () => {
                           ></i>
                         </button>
                       )}
-                      <button
-                        className="border border-0 bg-transparent"
-                        onClick={() => handleShowDetails(character.uid)}
-                      >
-                        <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
-                      </button>
+                      <Link to={`/details/characters/${character.uid}`}>
+                        <button
+                          className="border border-0 bg-transparent"
+                          onClick={() => handleShowDetails(character.uid)}
+                        >
+                          <i className="fa-solid fa-circle-info fs-1 ms-3 text-info"></i>
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -117,36 +121,6 @@ const Characters = () => {
           </div>
         ))}
       </div>
-      <Modal show={selectedCharacter !== null} onHide={handleCloseDetails}>
-        <Modal.Header closeButton>
-          <Modal.Title>Character Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedCharacter !== null &&
-            store.characterDetails[selectedCharacter] && (
-              <div>
-                <p className="fw-bold">
-                  Name: {store.characterDetails[selectedCharacter].name}
-                </p>
-                <p className="fw-bold">
-                  Birth Year:{" "}
-                  {store.characterDetails[selectedCharacter].birth_year}
-                </p>
-                <p className="fw-bold">
-                  Height: {store.characterDetails[selectedCharacter].height}
-                </p>
-                <p className="fw-bold">
-                  Homeworld:{" "}
-                  {store.characterDetails[selectedCharacter].homeworld}
-                </p>
-                <p className="fw-bold">
-                  Skin Color:{" "}
-                  {store.characterDetails[selectedCharacter].skin_color}
-                </p>
-              </div>
-            )}
-        </Modal.Body>
-      </Modal>
     </div>
   );
 };
