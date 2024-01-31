@@ -41,7 +41,7 @@ const Planets = () => {
 
   // Función para obtener la URL de la imagen del planeta
   const getPlanetImageUrl = (planetId) => {
-    return `https://starwars-visualguide.com/assets/img/planets/${planetId}.jpg`;
+    return `https://starwars-visualguide.com/assets/img/planets/${planetId === "1" ? "8" : planetId}.jpg`;
   };
 
   return (
