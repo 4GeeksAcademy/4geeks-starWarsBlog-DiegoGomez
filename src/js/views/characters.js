@@ -34,17 +34,11 @@ const Characters = () => {
     setSelectedCharacter(characterId);
   };
 
-  // Para cerrar el modal, se pone el estado selectedCharacter a null
-  const handleCloseDetails = () => {
-    setSelectedCharacter(null);
-  };
 
   // Función para obtener la URL de la imagen del personaje
   const getCharacterImageUrl = (characterId) => {
     return `https://starwars-visualguide.com/assets/img/characters/${characterId}.jpg`;
   };
-
-  console.log(store.characters[0]);
 
   return (
     <div className="p-5 mt-5">

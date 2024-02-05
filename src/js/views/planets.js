@@ -34,11 +34,6 @@ const Planets = () => {
     setSelectedPlanet(planetId);
   };
 
-  // Para cerrar el modal, se pone el estado selectedPlanet a null
-  const handleCloseDetails = () => {
-    setSelectedPlanet(null);
-  };
-
   // Función para obtener la URL de la imagen del planeta
   const getPlanetImageUrl = (planetId) => {
     return `https://starwars-visualguide.com/assets/img/planets/${planetId === "1" ? "8" : planetId}.jpg`;

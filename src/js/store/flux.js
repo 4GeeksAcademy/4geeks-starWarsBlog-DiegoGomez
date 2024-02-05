@@ -19,24 +19,11 @@ const getState = ({ getStore, getActions, setStore }) => {
     },
     actions: {
       // Función para recuperar la lista de personajes
-      fetchCharacters: async (retryCount = 0) => {
+      fetchCharacters: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/people/");
           if (!response.ok) {
-            if (response.status === 429) {
-              // Si se recibe un código de estado 429 (demasiadas solicitudes), intentar nuevamente después de 5 segundos
-              const delay = 5000;
-              await new Promise((resolve) => setTimeout(resolve, delay));
-              // El número máximo de reintentos es 3
-              if (retryCount < 3) {
-                // Reintentar la solicitud incrementando el contador de reintentos en 1 cada vez
-                return actions.fetchCharacters(retryCount + 1);
-              } else {
-                throw new Error("Límite máximo de reintentos alcanzado");
-              }
-            } else {
-              throw new Error("Error al recuperar los personajes");
-            }
+            throw new Error("Error al recuperar los personajes");
           }
           const data = await response.json();
           // Actualizar el estado con la lista de personajes obtenida
@@ -78,24 +65,11 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
       // Función para recuperar la lista de vehículos
-      fetchVehicles: async (retryCount = 0) => {
+      fetchVehicles: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/vehicles/");
           if (!response.ok) {
-            if (response.status === 429) {
-              // Si se recibe un código de estado 429 (demasiadas solicitudes), intentar nuevamente después de 5 segundos
-              const delay = 5000;
-              await new Promise((resolve) => setTimeout(resolve, delay));
-              // El número máximo de reintentos es 3
-              if (retryCount < 3) {
-                // Reintentar la solicitud incrementando el contador de reintentos en 1 cada vez
-                return actions.fetchVehicles(retryCount + 1);
-              } else {
-                throw new Error("Límite máximo de reintentos alcanzado");
-              }
-            } else {
-              throw new Error("Error al recuperar los vehículos");
-            }
+            throw new Error("Error al recuperar los vehículos");
           }
           const data = await response.json();
           // Actualizar el estado con la lista de vehículos obtenida
@@ -134,24 +108,11 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
       // Función para recuperar la lista de planetas
-      fetchPlanets: async (retryCount = 0) => {
+      fetchPlanets: async () => {
         try {
           const response = await fetch("https://www.swapi.tech/api/planets/");
           if (!response.ok) {
-            if (response.status === 429) {
-              // Si se recibe un código de estado 429 (demasiadas solicitudes), intentar nuevamente después de 5 segundos
-              const delay = 5000;
-              await new Promise((resolve) => setTimeout(resolve, delay));
-              // El número máximo de reintentos es 3
-              if (retryCount < 3) {
-                // Reintentar la solicitud incrementando el contador de reintentos en 1 cada vez
-                return actions.fetchPlanets(retryCount + 1);
-              } else {
-                throw new Error("Límite máximo de reintentos alcanzado");
-              }
-            } else {
-              throw new Error("Error al recuperar los personajes");
-            }
+            throw new Error("Error al recuperar los planetas");
           }
           const data = await response.json();
           // Actualizar el estado con la lista de planetas obtenida

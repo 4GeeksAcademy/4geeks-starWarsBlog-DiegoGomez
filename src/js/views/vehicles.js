@@ -34,11 +34,6 @@ const Vehicles = () => {
     setSelectedVehicle(vehicleId);
   };
 
-  // Para cerrar el modal, se pone el estado selectedVehicle a null
-  const handleCloseDetails = () => {
-    setSelectedVehicle(null);
-  };
-
   // Función para obtener la URL de la imagen del vehículo
   const getVehicleImageUrl = (vehicleId) => {
     return `https://starwars-visualguide.com/assets/img/vehicles/${vehicleId}.jpg`;
